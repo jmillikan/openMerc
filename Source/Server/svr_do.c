@@ -2611,7 +2611,7 @@ void do_command(int cn, char *ptr)
 		;
 		break;
 	case 'p':
-        if (prefix(cmd, "pents") && f_g)
+        if (prefix(cmd, "pents"))
         {
             do_check_pents(cn);
             return;
