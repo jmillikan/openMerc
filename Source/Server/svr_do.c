@@ -1961,7 +1961,7 @@ void do_check_pents(int cn)
         act++;
     }
 
-    do_char_log(n, 1, "%d pentagrams active.", act);
+    do_char_log(cn, 1, "%d pentagrams active.", act);
 }
 
 void do_list_net(int cn, int co)
