@@ -30,7 +30,7 @@ HCURSOR cursor[10];
 void cmd(int cmd, int x, int y);
 
 int quit = 0;
-char host_addr[84] = {MHOST};
+char host_addr[84] = {""};
 int host_port = 5555;
 
 extern char path[];
