@@ -1945,6 +1945,25 @@ void do_respawn(int cn, int co)
 	globs->reset_char = co;
 }
 
+void do_check_pents(int cn)
+{
+    int n, act = 0;
+    for (n = 1; n<MAXITEM; n++) {
+        if (it[n].used == USE_EMPTY) {
+            continue;
+        }
+        if (it[n].driver != 33) {
+            continue;
+        }
+        if (it[n].active != -1) {
+            continue;
+        }
+        act++;
+    }
+
+    do_char_log(cn, 1, "%d pentagrams active.", act);
+}
+
 void do_list_net(int cn, int co)
 {
 	int n;
@@ -2592,6 +2611,12 @@ void do_command(int cn, char *ptr)
 		;
 		break;
 	case 'p':
+        if (prefix(cmd, "pents"))
+        {
+            do_check_pents(cn);
+            return;
+        }
+        ;
 		if (prefix(cmd, "passwor") && f_g)
 		{
 			break;
