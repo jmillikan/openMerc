@@ -852,6 +852,8 @@ int main(int argc, char *args[])
 
 	nice_res = nice(5);
 
+	printf("argc: %d", argc);
+
 	if (argc==1)
 	{
 		if (fork())

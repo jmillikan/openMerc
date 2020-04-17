@@ -2052,7 +2052,7 @@ int npc_item_value(int in)
 {
 	int score = 0, n;
 
-	for (n = 0; n<50; n++)
+	for (n = 0; n < 5; n++)
 	{
 		score += it[in].attrib[n][0] * 5;
 	}

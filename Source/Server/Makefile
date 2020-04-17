@@ -156,8 +156,11 @@ password: password.c $(SHEADER)
 .obj/rdtsc.o:		rdtsc.S
 	$(CC) $(CFLAGS) -o .obj/rdtsc.o -c rdtsc.S
 
-clean:
-	- sudo rm server password respawn $(CGIIMP)/acct.cgi $(CGIBIN)/info.cgi .obj/*.o
+clean: buildclean
+	- sudo rm server password respawn $(CGIIMP)/acct.cgi $(CGIBIN)/info.cgi
+
+buildclean:
+	- rm .obj/*.o
 
 dist:
 	rm -f merc2.tgz

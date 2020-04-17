@@ -1350,7 +1350,7 @@ void pop_wipe(void)
 
 void pop_remove(void)
 {
-	int h1, h2, h3, n, m, in, chc = 0, itc = 0;
+	int h1, h2, h3, n, m, in, succ = 1, chc = 0, itc = 0;
 
 	xlog("Saving players...");
 
@@ -1383,7 +1383,7 @@ void pop_remove(void)
 		{
 			if ((in = ch[n].item[m])!=0)
 			{
-				write(h2, &it[in], sizeof(struct item));
+				succ = succ && sizeof(struct item) == write(h2, &it[in], sizeof(struct item));
 				itc++;
 			}
 		}
@@ -1392,7 +1392,7 @@ void pop_remove(void)
 		{
 			if ((in = ch[n].worn[m])!=0)
 			{
-				write(h2, &it[in], sizeof(struct item));
+                succ = succ && sizeof(struct item) == write(h2, &it[in], sizeof(struct item));
 				itc++;
 			}
 		}
@@ -1401,7 +1401,7 @@ void pop_remove(void)
 		{
 			if ((in = ch[n].spell[m])!=0)
 			{
-				write(h2, &it[in], sizeof(struct item));
+                succ = succ && sizeof(struct item) == write(h2, &it[in], sizeof(struct item));
 				itc++;
 			}
 		}
@@ -1410,17 +1410,17 @@ void pop_remove(void)
 		{
 			if ((in = ch[n].depot[m])!=0)
 			{
-				write(h2, &it[in], sizeof(struct item));
+                succ = succ && sizeof(struct item) == write(h2, &it[in], sizeof(struct item));
 				itc++;
 			}
 		}
 
 		ch[n].data[99] = n;
-		write(h1, &ch[n], sizeof(struct character));
+        succ = succ && sizeof(struct character) == write(h1, &ch[n], sizeof(struct character));
 		chc++;
 	}
 
-	write(h3, globs, sizeof(struct global));
+    succ = succ && sizeof(struct global) == write(h3, globs, sizeof(struct global));
 
 /*	for (m=0; m<MAPX*MAPY; m++) {
                 if ((in=map[m].it)!=0) {
@@ -1436,7 +1436,12 @@ void pop_remove(void)
 	close(h2);
 	close(h1);
 
-	xlog("Saved %d chars, %d items.", chc, itc);
+	if(!succ){
+        xlog("Error saving characters.");
+	}
+	else {
+        xlog("Saved %d chars, %d items.", chc, itc);
+    }
 }
 
 void pop_load(void)

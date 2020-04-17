@@ -291,12 +291,12 @@ void plr_challenge(int nr)
 
 void plr_perf_report(int nr)
 {
-	int ticksize, _idle, skip; //,cn;
+//	int ticksize, _idle, skip; //,cn;
 //      float kbps;
 
-	ticksize = *(unsigned short*)(player[nr].inbuf + 1);
-	skip  = *(unsigned short*)(player[nr].inbuf + 3);
-	_idle = *(unsigned short*)(player[nr].inbuf + 5);
+//	ticksize = *(unsigned short*)(player[nr].inbuf + 1);
+//	skip  = *(unsigned short*)(player[nr].inbuf + 3);
+//	_idle = *(unsigned short*)(player[nr].inbuf + 5);
 //      kbps=*(float *)(player[nr].inbuf+7);
 
 	player[nr].lasttick = globs->ticker;      // update timeout
@@ -1198,7 +1198,7 @@ void plr_cmd_ctick(int nr)
 	player[nr].lasttick = globs->ticker;
 }
 
-static unsigned int clcmd[255];
+static unsigned int clcmd[256];
 
 void cl_list(void)
 {
@@ -1489,13 +1489,13 @@ void plr_newlogin(int nr)
 
 	plog(nr, "Created new character");
 
-	do_char_log(cn, 1, intro_msg1);
+	do_char_log(cn, 1, "%s", intro_msg1);
 	do_char_log(cn, 1, " \n");
-	do_char_log(cn, 1, intro_msg2);
+	do_char_log(cn, 1, "%s", intro_msg2);
 	do_char_log(cn, 1, " \n");
-	do_char_log(cn, 1, intro_msg3);
+	do_char_log(cn, 1, "%s", intro_msg3);
 	do_char_log(cn, 1, " \n");
-	do_char_log(cn, 1, intro_msg4);
+	do_char_log(cn, 1, "%s", intro_msg4);
 	do_char_log(cn, 1, " \n");
 
 	if (player[nr].passwd[0] && !(ch[cn].flags & CF_PASSWD))
@@ -1529,7 +1529,7 @@ void plr_login(int nr)
 		return;
 	}
 
-	if (ch[cn].pass1!=player[nr].pass1 || ch[cn].pass2!=ch[cn].pass2)
+	if (ch[cn].pass1!=player[nr].pass1 || ch[cn].pass2!=player[nr].pass2)
 	{
 		plog(nr, "Login as %s denied (pass1/pass2)", ch[cn].name);
 		plr_logout(0, nr, LO_PASSWORD);
@@ -1647,13 +1647,13 @@ void plr_login(int nr)
 
 	plog(nr, "Login successful");
 
-	do_char_log(cn, 1, intro_msg1);
+	do_char_log(cn, 1, "%s", intro_msg1);
 	do_char_log(cn, 1, " \n");
-	do_char_log(cn, 1, intro_msg2);
+	do_char_log(cn, 1, "%s", intro_msg2);
 	do_char_log(cn, 1, " \n");
-	do_char_log(cn, 1, intro_msg3);
+	do_char_log(cn, 1, "%s", intro_msg3);
 	do_char_log(cn, 1, " \n");
-	do_char_log(cn, 1, intro_msg4);
+	do_char_log(cn, 1, "%s", intro_msg4);
 	do_char_log(cn, 1, " \n");
 
 	if (player[nr].passwd[0] && !(ch[cn].flags & CF_PASSWD))
@@ -1859,7 +1859,7 @@ void plr_state(int nr)
 	}
 }
 
-void inline plr_change_stat(int nr, unsigned char *a, unsigned char *b, unsigned char code, unsigned char n)
+void plr_change_stat(int nr, unsigned char *a, unsigned char *b, unsigned char code, unsigned char n)
 {
 	unsigned char buf[16];
 
@@ -1882,7 +1882,7 @@ void inline plr_change_stat(int nr, unsigned char *a, unsigned char *b, unsigned
 	}
 }
 
-void inline plr_change_power(int nr, unsigned short *a, unsigned short *b, unsigned char code)
+void plr_change_power(int nr, unsigned short *a, unsigned short *b, unsigned char code)
 {
 	unsigned char buf[16];
 

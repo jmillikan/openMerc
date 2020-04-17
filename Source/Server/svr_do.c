@@ -2051,7 +2051,7 @@ void do_become_skua(int cn)
 void do_command(int cn, char *ptr)
 {
 	int n, m;
-	int f_c, f_g, f_i, f_s, f_p, f_m, f_u, f_sh, f_gi, f_giu, f_gius, f_poh, f_pol, f_gg;
+	int f_c, f_g, f_i, f_s, f_p, f_m, f_u, f_sh, f_gi, f_giu, f_gius, f_pol, f_gg;
 	char arg[10][40], *args[10];
 	char *cmd;
 
@@ -2110,7 +2110,7 @@ void do_command(int cn, char *ptr)
 	f_gi   = f_g || f_i;
 	f_giu  = f_gi || f_u;
 	f_gius = f_giu || f_s;
-	f_poh  = (ch[cn].flags & CF_POH) !=0;
+	//f_poh  = (ch[cn].flags & CF_POH) !=0;
 	f_pol  = (ch[cn].flags & (CF_POH_LEADER | CF_GOD)) !=0;
 
 	switch (cmd[0])
@@ -3173,7 +3173,7 @@ void remove_enemy(int co)
 // msg must be a do_char_log() format string like "you see %s in the corpse.\n".
 void do_ransack_corpse(int cn, int co, char *msg)
 {
-	int in, n, t;
+	int in, n;
 
 	// Check for unique weapon in hand
 	if ((in = ch[co].worn[WN_RHAND]) && is_unique(in) && ch[cn].skill[SK_SENSE][5] > RANDOM(200))
@@ -3188,7 +3188,6 @@ void do_ransack_corpse(int cn, int co, char *msg)
 		{
 			continue;
 		}
-		t = it[in].temp;
 		if(!(it[in].flags & IF_MAGIC))
 		{
 			continue;                      // this item havent 'magic' flag
@@ -3219,7 +3218,7 @@ void do_ransack_corpse(int cn, int co, char *msg)
 // note: cn may be zero!!
 void do_char_killed(int cn, int co)
 {
-	int n, in, x, y, temp = 0, m, tmp, wimp, cc = 0, fn, r1, r2;
+	int n, in, m, tmp, wimp, cc = 0, fn, r1, r2;
 	unsigned long long mf;
 
 	do_notify_char(co, NT_DIED, cn, 0, 0, 0);
@@ -3419,14 +3418,14 @@ void do_char_killed(int cn, int co)
 	}
 
 	// remember template if we're to respawn this char
-	if (ch[co].flags & CF_RESPAWN)
-	{
-		temp = ch[co].temp;
-	}
+//	if (ch[co].flags & CF_RESPAWN)
+//	{
+//		temp = ch[co].temp;
+//	}
 
 	// really kill co:
-	x = ch[co].x;
-	y = ch[co].y;
+//	x = ch[co].x;
+//	y = ch[co].y;
 
 	// check for Guardian Angel
 	for (n = wimp = 0; n<20; n++)
@@ -5222,7 +5221,7 @@ void really_update_char(int cn)
 //       further, it is called ONLY from tick()
 void do_regenerate(int cn)
 {
-	int n, in, nohp = 0, noend = 0, nomana = 0, old, hp = 0, end = 0, mana = 0, uwater = 0, gothp = 0;
+	int n, in, nohp = 0, noend = 0, nomana = 0, old, hp = 0, mana = 0, uwater = 0, gothp = 0;
 	int moonmult = 20;
 	unsigned long long prof;
 
@@ -5277,8 +5276,6 @@ void do_regenerate(int cn)
 		case    7:
 			if (!noend)
 			{
-				end = 1;
-
 				ch[cn].a_end += moonmult * 4;
 
 				if (!noend && ch[cn].skill[SK_REST][0])
@@ -5341,7 +5338,6 @@ void do_regenerate(int cn)
 				if (!noend)
 				{
 					ch[cn].a_end += 25;
-					end = 1;
 				}
 			}
 			break;
@@ -5372,7 +5368,6 @@ void do_regenerate(int cn)
 					if (!noend)
 					{
 						ch[cn].a_end += 25;
-						end = 1;
 					}
 				}
 			}
