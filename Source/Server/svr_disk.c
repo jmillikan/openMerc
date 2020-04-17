@@ -46,9 +46,16 @@ int extend(int handle, long sizereq, size_t sizeone, void*templ)
 		{
 			return( 0);           // calloc() failure
 		}
-		for (; length < sizereq; length += sizeone)
+		int retries = 100;
+		while (length < sizereq && retries > 0)
 		{
-			write(handle, buffer, sizeone);
+			if(sizeone != write(handle, buffer, sizeone)){
+			    xlog("Failed to extend file. %d retries left.", retries);
+			    retries--;
+			}
+			else {
+                length += sizeone;
+			}
 		}
 		if (templ == NULL)
 		{
@@ -62,7 +69,7 @@ int extend(int handle, long sizereq, size_t sizeone, void*templ)
 /* CS, 991113: Use extend() to extend files where necessary */
 int load(void)
 {
-	int handle, flag = 0;
+	int handle;
 	struct map tmap;
 
 	/** MAP **/
@@ -72,7 +79,6 @@ int load(void)
 	handle = open(DATDIR "/map.dat", O_RDWR);
 	if (handle==-1)
 	{
-		flag = 1;
 		xlog("Building map");
 		handle = open(DATDIR "/map.dat", O_RDWR | O_CREAT, 0600);
 	}

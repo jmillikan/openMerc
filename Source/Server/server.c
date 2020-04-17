@@ -844,15 +844,13 @@ int see_hit = 0, see_miss = 0;
 
 int main(int argc, char *args[])
 {
-	int sock, n, one = 1, doleave = 0, ltimer = 0;
+	int sock, n, nice_res, one = 1, doleave = 0, ltimer = 0;
 	struct sockaddr_in addr;
 	int pidfile;
 	char pid_str[10];
 	unsigned long long t1, t2;
 
-	if(nice(5)) {
-	    xlog("nice failed.");
-	}
+	nice_res = nice(5);
 
 	if (argc==1)
 	{
@@ -880,6 +878,10 @@ int main(int argc, char *args[])
 
 	xlog("Mercenaries of Astonia Server v%d.%02d.%02d", VERSION >> 16, (VERSION >> 8) & 255, VERSION & 255);
 	xlog("Copyright (C) 1997-2001 Daniel Brockhaus");
+
+	if(nice_res){
+	    xlog("Nice failed.");
+	}
 
 	t1 = rdtsc();
 	sleep(1);
