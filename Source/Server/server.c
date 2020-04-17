@@ -820,10 +820,10 @@ void prof_stop(int task, unsigned long long cycle)
 
 void tmplabcheck(int in)
 {
-	int cn;
+	int cn = it[in].carried;
 
 	// carried by a player?
-	if (!(cn = it[in].carried) | !IS_SANEPLAYER(cn))
+	if (!cn | !IS_SANEPLAYER(cn))
 	{
 		return;
 	}
@@ -850,7 +850,9 @@ int main(int argc, char *args[])
 	char pid_str[10];
 	unsigned long long t1, t2;
 
-	nice(5);
+	if(nice(5)) {
+	    xlog("nice failed.");
+	}
 
 	if (argc==1)
 	{
@@ -1025,7 +1027,9 @@ int main(int argc, char *args[])
 	if (pidfile!=-1)
 	{
 		sprintf(pid_str, "%d\n", getpid());
-		write(pidfile, pid_str, strlen(pid_str));
+		if(strlen(pid_str) != write(pidfile, pid_str, strlen(pid_str))){
+		    xlog("Failed to write PID to server.pid");
+		}
 		close(pidfile);
 		chmod("server.pid", 0664);
 	}
