@@ -1446,7 +1446,7 @@ void pop_remove(void)
 
 void pop_load(void)
 {
-	int h1, h2, h3, n, m, in, chc = 0, itc = 0;
+	int h1, h2, h3, n, m, in, chc = 0, itc = 0, succ = 1;
 	struct character ctmp;
 	struct item itmp;
 
@@ -1519,7 +1519,7 @@ void pop_load(void)
 					break;
 				}
 
-				read(h2, &it[in], sizeof(struct item));
+				succ = succ && sizeof(struct item) == read(h2, &it[in], sizeof(struct item));
 				itc++;
 
 				ch[n].item[m] = in;
@@ -1543,7 +1543,7 @@ void pop_load(void)
 					break;
 				}
 
-				read(h2, &it[in], sizeof(struct item));
+                succ = succ && sizeof(struct item) == read(h2, &it[in], sizeof(struct item));
 				itc++;
 
 				ch[n].worn[m] = in;
@@ -1567,7 +1567,7 @@ void pop_load(void)
 					break;
 				}
 
-				read(h2, &it[in], sizeof(struct item));
+                succ = succ && sizeof(struct item) == read(h2, &it[in], sizeof(struct item));
 				itc++;
 
 				ch[n].spell[m] = in;
@@ -1591,7 +1591,7 @@ void pop_load(void)
 					break;
 				}
 
-				read(h2, &it[in], sizeof(struct item));
+                succ = succ && sizeof(struct item) == read(h2, &it[in], sizeof(struct item));
 				itc++;
 
 				ch[n].depot[m] = in;
@@ -1607,7 +1607,7 @@ void pop_load(void)
 		}
 	}
 
-	read(h3, globs, sizeof(struct global));
+    succ = succ && sizeof(struct global) == read(h3, globs, sizeof(struct global));
 
 	while (1)
 	{
@@ -1647,7 +1647,12 @@ void pop_load(void)
 	close(h2);
 	close(h1);
 
-	xlog("Loaded %d chars, %d items.", chc, itc);
+	if(!succ){
+        xlog("Error loading characters.");
+	}
+	else {
+        xlog("Loaded %d chars, %d items.", chc, itc);
+	}
 }
 
 void populate(void)
@@ -1691,7 +1696,7 @@ void populate(void)
 
 void pop_save_char(int nr)
 {
-	int h1, m, in, chc = 0, itc = 0;
+	int h1, m, in, chc = 0, itc = 0, succ = 1;
 	char buf[80];
 	unsigned long long prof;
 
@@ -1719,7 +1724,7 @@ void pop_save_char(int nr)
 
 	// save player
 	ch[nr].data[99] = nr;
-	write(h1, &ch[nr], sizeof(struct character));
+	succ = succ && sizeof(struct character) == write(h1, &ch[nr], sizeof(struct character));
 	chc++;
 
 	// save inventory
@@ -1727,7 +1732,7 @@ void pop_save_char(int nr)
 	{
 		if ((in = ch[nr].item[m])!=0)
 		{
-			write(h1, &it[in], sizeof(struct item));
+            succ = succ && sizeof(struct item) == write(h1, &it[in], sizeof(struct item));
 			itc++;
 		}
 	}
@@ -1737,7 +1742,7 @@ void pop_save_char(int nr)
 	{
 		if ((in = ch[nr].worn[m])!=0)
 		{
-			write(h1, &it[in], sizeof(struct item));
+            succ = succ && sizeof(struct item) == write(h1, &it[in], sizeof(struct item));
 			itc++;
 		}
 	}
@@ -1747,20 +1752,26 @@ void pop_save_char(int nr)
 	{
 		if ((in = ch[nr].depot[m])!=0)
 		{
-			write(h1, &it[in], sizeof(struct item));
+            succ = succ && sizeof(struct item) == write(h1, &it[in], sizeof(struct item));
 			itc++;
 		}
 	}
 
 	close(h1);
 
-	//xlog("Saved %d chars, %d items.",chc,itc);
+	if(!succ){
+	    xlog("Failed to save character.");
+	}
+	else {
+        xlog("Saved %d chars, %d items.",chc,itc);
+    }
+
 	prof_stop(45, prof);
 }
 
 void pop_load_char(int nr)
 {
-	int h1, m, in, chc = 0, itc = 0;
+	int h1, m, in, chc = 0, itc = 0, succ = 1;
 	struct character ctmp;
 	char buf[80];
 
@@ -1835,7 +1846,7 @@ void pop_load_char(int nr)
 				break;
 			}
 
-			read(h1, &it[in], sizeof(struct item));
+            succ = succ && sizeof(struct item) == read(h1, &it[in], sizeof(struct item));
 			itc++;
 
 			ch[nr].item[m] = in;
@@ -1864,7 +1875,7 @@ void pop_load_char(int nr)
 				break;
 			}
 
-			read(h1, &it[in], sizeof(struct item));
+            succ = succ && sizeof(struct item) == read(h1, &it[in], sizeof(struct item));
 			itc++;
 
 			ch[nr].worn[m] = in;
@@ -1888,7 +1899,7 @@ void pop_load_char(int nr)
 				break;
 			}
 
-			read(h1, &it[in], sizeof(struct item));
+            succ = succ && sizeof(struct item) == read(h1, &it[in], sizeof(struct item));
 			itc++;
 
 			ch[nr].depot[m] = in;
@@ -1904,6 +1915,10 @@ void pop_load_char(int nr)
 	}
 
 	close(h1);
+
+    if(!succ){
+        xlog("Failure loading character.");
+    }
 }
 
 void pop_load_all_chars(void)

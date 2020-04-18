@@ -286,7 +286,7 @@ int npc_moveto(int cn, int x, int y)
 	return(0);
 }
 
-int npc_cityattack_wait(cn)
+int npc_cityattack_wait(int cn)
 {
 	if ((globs->mdtime % 28800)<20)
 	{
