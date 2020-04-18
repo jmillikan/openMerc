@@ -684,6 +684,8 @@ APIENTRY OptionsProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			save_options();
 			{
 				void so_connect(void*);
+
+                GetDlgItemText(hwnd, IDC_HOST, host_addr, 83);
 				_beginthread(so_connect, 16384, (void*)hwnd);
 			}
 
@@ -924,6 +926,7 @@ APIENTRY OptionsProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		SetDlgItemText(hwnd, IDC_CNAME, pdata.cname);
 		SetDlgItemText(hwnd, IDC_DESC, pdata.desc);
+		SetDlgItemText(hwnd, IDC_HOST, host_addr);
 
 		translate_okey2race(&race, &sex);
 

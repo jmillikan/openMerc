@@ -46,3 +46,4 @@ produced by Borland Resource Workshop
 #define IDC_FULLALPHA    54
 #define IDC_PARTIALALPHA 55
 #define IDC_NOALPHA      56
+#define IDC_HOST         57

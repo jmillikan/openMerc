@@ -1,10 +1,7 @@
 # openMerc Client
 
 ## Setting IP
-The IP address for the server must be changed in two places:
-* `main.c` in  the function: `WinMain` - `strcmp(host_addr,"127.0.0.1")`
-* `common.h` - `#define MHOST  "127.0.0.1"`
-
+* A default IP address can be set 
 
 # Enable Sprite Packer
 * `common.h` - uncomment `//#define DOCONVERT  // enable sprite packer`
