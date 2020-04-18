@@ -2,7 +2,8 @@ all: install respawn password cgi/info.cgi cgi/acct.cgi owner
 
 CC=gcc -m32
 DEBUG=-g
-CFLAGS=-Wall -Wshadow -Winline -Wno-pointer-sign -O3 $(DEBUG) -march=pentium4 -fno-strict-aliasing
+# Try setting EXTRAFLAGS=-DTESTSERVER
+CFLAGS=-Wall -Wshadow -Winline -Wno-pointer-sign -O3 $(DEBUG) -march=pentium4 -fno-strict-aliasing $(EXTRAFLAGS)
 LDFLAGS=-O $(DEBUG)
 ENDFLAGS=-lm -lz -lcrypt
 
@@ -51,6 +52,7 @@ owner:
 
 server:	$(OBJS)
 	$(CC) $(LDFLAGS) -o server $(OBJS) $(ENDFLAGS)
+	echo Extra flags: $(EXTRAFLAGS)
 
 install: server structure
 	sudo cp server $(SERVERDIR)/server

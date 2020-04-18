@@ -39,6 +39,12 @@
 
 #define GODPASSWORD "xxxxxxxxxxxx"
 
+#ifdef TESTSERVER
+#define VALHALLA 1
+#else
+#define VALHALLA 0
+#endif
+
 // wear positions
 #define WN_HEAD  0
 #define WN_NECK  1
