@@ -42,7 +42,6 @@ int ser_ver = 0;
 
 int ticker = 0;
 
-extern char host_addr[];
 extern int host_port;
 
 extern struct key okey;

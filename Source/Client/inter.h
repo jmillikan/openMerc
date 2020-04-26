@@ -47,11 +47,10 @@ struct pdata
 	struct xbutton xbutton[12];
 };
 
+// Writing out a char array directly is too much trouble for me.
 struct hostdata
 {
-    unsigned int marker1;
     char host_addr[84];
-    unsigned int marker2;
 };
 
 extern struct pdata pdata;

@@ -16,8 +16,6 @@
 #include "inter.h"
 #include "merc.rh"
 
-#define SIZEOF_HOST (sizeof(char) * 84)
-
 /*
  * Borland and Microsoft disagree on the size of the OPENFILENAME structure.
  * The following header is excerpted from "win.h" as included with
@@ -69,14 +67,13 @@ extern int  so_status;
 
 struct key  okey;
 struct pdata pdata = {"", "", "", 0};
-struct hostdata hostdata = {0x11223344, "", 0xCCDDEEFF};
+struct hostdata hostdata = {""};
 
 //--------------
 // option flags
 //--------------
 
 extern int  domusic, dosound, smode;
-extern char host_addr[84];
 static int  opmusic, opsound, opshadow;
 int race = 0, sex = 0;
 
@@ -196,71 +193,51 @@ void load_options(void)
 {
 	int n, handle, flag = 0;
 
-	struct {
-	    int a, hist, b, hist_len,
-	    c, words, d, domusic,
-	    e, dosound, f, pdata,
-	    g, okey, h, doalpha,
-	    i, doshadow, j, hostdata;
-	} read_dbg = {0x11223344, 0, 0x22334455, 0,
-               0x33445566, 0, 0x44556677, 0,
-               0x55667788, 0, 0x66778899, 0,
-               0x11223344, 0, 0x22334455, 0,
-               0x33445566, 0, 0x44556677, 0
-	};
-
 	handle = open("merc.dat", O_RDONLY | O_BINARY);
 	if (handle!=-1)
 	{
-		if ((read_dbg.hist = read(handle, history, sizeof(history)))!=sizeof(history))
+		if (read(handle, history, sizeof(history))!=sizeof(history))
 		{
 			flag = 1;
 		}
-		if ((read_dbg.hist_len = read(handle, hist_len, sizeof(hist_len)))!=sizeof(hist_len))
+		if (read(handle, hist_len, sizeof(hist_len))!=sizeof(hist_len))
 		{
 			flag = 1;
 		}
-		if ((read_dbg.words = read(handle, words, sizeof(words)))!=sizeof(words))
+		if (read(handle, words, sizeof(words))!=sizeof(words))
 		{
 			flag = 1;
 		}
-		if ((read_dbg.domusic = read(handle, &domusic, sizeof(domusic)))!=sizeof(domusic))
+		if (read(handle, &domusic, sizeof(domusic))!=sizeof(domusic))
 		{
 			flag = 1;
 		}
-		if ((read_dbg.dosound = read(handle, &dosound, sizeof(dosound)))!=sizeof(dosound))
+		if (read(handle, &dosound, sizeof(dosound))!=sizeof(dosound))
 		{
 			flag = 1;
 		}
-		if ((read_dbg.pdata = read(handle, &pdata, sizeof(pdata)))!=sizeof(pdata))
+		if (read(handle, &pdata, sizeof(pdata))!=sizeof(pdata))
 		{
 			flag = 1;
 		}
-		if ((read_dbg.okey = read(handle, &okey, sizeof(okey)))!=sizeof(okey))
+		if (read(handle, &okey, sizeof(okey))!=sizeof(okey))
 		{
 			flag = 1;
 		}
-		if ((read_dbg.doalpha = read(handle, &do_alpha, sizeof(do_alpha)))!=sizeof(do_alpha))
+		if (read(handle, &do_alpha, sizeof(do_alpha))!=sizeof(do_alpha))
 		{
 			do_alpha = 2;
 		}
-		if ((read_dbg.doshadow = read(handle, &do_shadow, sizeof(do_shadow)))!=sizeof(do_shadow))
+		if (read(handle, &do_shadow, sizeof(do_shadow))!=sizeof(do_shadow))
 		{
 			do_shadow = 1;
 		}
-        if ((read_dbg.hostdata = read(handle, &hostdata, sizeof(hostdata)))!=sizeof(hostdata))
+        if (read(handle, &hostdata, sizeof(hostdata))!=sizeof(hostdata))
         {
             //flag = 1;
         }
 
-//        if (read(handle, &host_addr, SIZEOF_HOST)!=SIZEOF_HOST)
-//        {
-//            //strcpy("", host_addr);
-//        }
-
 		close(handle);
-
-        DEBUG_WRITE(&read_dbg, sizeof(read_dbg));
 	}
 	else
 	{
@@ -309,40 +286,22 @@ void debug_write(void *p, char* name, size_t s)
 void save_options(void)
 {
 	int handle;
-	void *hostdatabw = (void *) &hostdata;
-
-    struct {
-        int a, hist, b, hist_len,
-                c, words, d, domusic,
-                e, dosound, f, pdata,
-                g, okey, h, doalpha,
-                i, doshadow, j, hostdata;
-    } write_dbg = {0xFF223344, 0, 0x22334455, 0,
-                  0xFF445566, 0, 0x44556677, 0,
-                  0xFF667788, 0, 0x66778899, 0,
-                  0xFF223344, 0, 0x22334455, 0,
-                  0xFF445566, 0, 0x44556677, 0
-    };
 
 	handle = open("merc.dat", O_WRONLY | O_BINARY | O_CREAT | O_TRUNC, 0666);
 	if (handle!=-1)
 	{
-		write_dbg.hist = write(handle, history, sizeof(history));
-        write_dbg.hist_len = write(handle, hist_len, sizeof(hist_len));
-        write_dbg.words = write(handle, words, sizeof(words));
-        write_dbg.domusic = write(handle, &domusic, sizeof(domusic));
-        write_dbg.dosound = write(handle, &dosound, sizeof(dosound));
-        write_dbg.pdata = write(handle, &pdata, sizeof(pdata));
-        write_dbg.okey = write(handle, &okey, sizeof(okey));
-        write_dbg.doalpha = write(handle, &do_alpha, sizeof(do_alpha));
-        write_dbg.doshadow = write(handle, &do_shadow, sizeof(do_shadow));
-        DEBUG_WRITE(hostdatabw, sizeof(hostdata));
-        write_dbg.hostdata = write(handle, &hostdata, sizeof(hostdata));
-		//write(handle, &host_addr, SIZEOF_HOST);
+		write(handle, history, sizeof(history));
+        write(handle, hist_len, sizeof(hist_len));
+        write(handle, words, sizeof(words));
+        write(handle, &domusic, sizeof(domusic));
+        write(handle, &dosound, sizeof(dosound));
+        write(handle, &pdata, sizeof(pdata));
+        write(handle, &okey, sizeof(okey));
+        write(handle, &do_alpha, sizeof(do_alpha));
+        write(handle, &do_shadow, sizeof(do_shadow));
+        write(handle, &hostdata, sizeof(hostdata));
 		close(handle);
 	}
-
-    DEBUG_WRITE(&write_dbg, sizeof(write_dbg));
 }
 
 void load_char(HWND hwnd, char *name)
