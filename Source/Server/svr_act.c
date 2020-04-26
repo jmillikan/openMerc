@@ -593,33 +593,25 @@ void plr_wave(int cn)
 
 void plr_use(int cn)
 {
-	int m, in, x, y;
+	int m, in;
 
 	do_area_notify(cn, 0, ch[cn].x, ch[cn].y, NT_SEE, cn, 0, 0, 0);
 
 	if (ch[cn].dir==DX_UP && ch[cn].y>0)
 	{
 		m = ch[cn].x + ch[cn].y * MAPX - MAPX;
-		x = ch[cn].x;
-		y = ch[cn].y - 1;
 	}
 	else if (ch[cn].dir==DX_DOWN && ch[cn].y<MAPY - 1)
 	{
 		m = ch[cn].x + ch[cn].y * MAPX + MAPX;
-		x = ch[cn].x;
-		y = ch[cn].y + 1;
 	}
 	else if (ch[cn].dir==DX_LEFT && ch[cn].x>0)
 	{
 		m = ch[cn].x + ch[cn].y * MAPX - 1;
-		x = ch[cn].x - 1;
-		y = ch[cn].y;
 	}
 	else if (ch[cn].dir==DX_RIGHT && ch[cn].x<MAPX - 1)
 	{
 		m = ch[cn].x + ch[cn].y * MAPX + 1;
-		x = ch[cn].x + 1;
-		y = ch[cn].y;
 	}
 	else
 	{
@@ -651,7 +643,7 @@ void plr_skill(int cn)
 
 void plr_drop(int cn)
 {
-	int m, in, x, y, tmp, money = 0, in2;
+	int m, in, x, y, tmp, in2;
 
 	do_area_notify(cn, 0, ch[cn].x, ch[cn].y, NT_SEE, cn, 0, 0, 0);
 
@@ -766,7 +758,6 @@ void plr_drop(int cn)
 			strcpy(it[in].description, "A lonely silver coin");
 			it[in].sprite[0] = 37;
 		}
-		money = 1;
 
 		chlog(cn, "Dropped %dG %dS", tmp / 100, tmp % 100);
 	}

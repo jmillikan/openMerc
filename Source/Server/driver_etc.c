@@ -144,8 +144,6 @@ int char_moveto(int cn, int x, int y, int flag, int x2, int y2)
 
 int char_dropto(int cn, int x, int y)
 {
-	int m;
-
 	if (ch[cn].cerrno==ERR_FAILED)
 	{
 		ch[cn].cerrno = ERR_NONE;
@@ -157,8 +155,6 @@ int char_dropto(int cn, int x, int y)
 	{
 		return( -1);
 	}
-
-	m = x + y * MAPX;
 
 	// drop if possible
 	if (ch[cn].x==x - 1 && ch[cn].y==y)

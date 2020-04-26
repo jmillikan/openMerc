@@ -1467,7 +1467,7 @@ void effectlist(int cn)
 			break;
 		}
 		scprintf(buf, "\n");
-		do_char_log(cn, 0, buf);
+		do_char_log(cn, 0, "%s", buf);
 	}
 }
 

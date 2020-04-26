@@ -1163,7 +1163,7 @@ void answer_whoami(int cn, int co)
 
 void answer_where(int cn, int co)
 {
-	do_sayx(cn, get_area(cn, 1));
+	do_sayx(cn, "%s", get_area(cn, 1));
 }
 
 void answer_time(int cn, int co)
@@ -1376,7 +1376,7 @@ void npc_hear(int cn, int co, char *text)
 		ch[cn].data[27] = globs->ticker;
 		if (ch[cn].text[7][0])
 		{
-			do_sayx(cn, ch[cn].text[7]);
+			do_sayx(cn, "%s", ch[cn].text[7]);
 		}
 		return;
 	}

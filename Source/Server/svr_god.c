@@ -1991,6 +1991,7 @@ void god_tavern(int cn)
 int god_build_start(int cn)
 {
 	int co, n, in;
+	char name[40];
 
 	if ((co = ch[cn].data[CHD_COMPANION]))
 	{
@@ -2021,7 +2022,8 @@ int god_build_start(int cn)
 	ch[co].citem = ch[cn].citem;
 	ch[cn].citem = 0;
 
-	sprintf(ch[co].name, "%s's holder", ch[cn].name);
+	strncpy(ch[cn].name, name, 30); // Don't overflow name field
+	sprintf(ch[co].name, "%s's holder", name);
 	god_drop_char(co, 10, 10);
 
 	/* Set build mode flag */
@@ -2996,7 +2998,7 @@ void god_racechange(int co, int temp)
 
 int god_save(int cn, int co)
 {
-	int handle;
+	int handle, succ = 1;
 	char buf[80];
 
 	if (co == 0)
@@ -3023,14 +3025,21 @@ int god_save(int cn, int co)
 		perror(buf);
 		return(0);
 	}
-	write(handle, &co, 4);
-	write(handle, &ch[co].pass1, 4);
-	write(handle, &ch[co].pass2, 4);
-	write(handle, ch[co].name, 40);
-	write(handle, &ch[co].temp, 4);
+	succ = succ && (4 == write(handle, &co, 4));
+    succ = succ && (4 == write(handle, &ch[co].pass1, 4));
+    succ = succ && (4 == write(handle, &ch[co].pass2, 4));
+    succ = succ && (40 == write(handle, ch[co].name, 40));
+    succ = succ && (4 == write(handle, &ch[co].temp, 4));
 	close(handle);
-	do_char_log(cn, 1, "Saved as %s.moa.\n", ch[co].name);
-	chlog(cn, "IMP: Saved %s.", ch[co].name);
+
+	if(succ) {
+        do_char_log(cn, 1, "Saved as %s.moa.\n", ch[co].name);
+        chlog(cn, "IMP: Saved %s.", ch[co].name);
+    }
+	else {
+        do_char_log(cn, 1, "Error writing %s.moa.\n", ch[co].name);
+        chlog(cn, "IMP: Error writing %s.", ch[co].name);
+	}
 
 	return(1);
 }
@@ -3050,7 +3059,9 @@ void god_mail_pass(int cn, int co)
 	        ch[co].name,
 	        "admin@astonia.com");
 
-	system(buf);
+	if(system(buf)){
+	    do_char_log(cn, 1, "Error sending mail.\n");
+	}
 }
 
 void god_slap(int cn, int co)
@@ -3573,7 +3584,7 @@ int maxban = 0;
 
 int god_read_banlist(void)
 {
-	int handle;
+	int handle, succ;
 
 	handle = open("banlist.dat", O_RDONLY);
 	if (handle==-1)
@@ -3581,17 +3592,22 @@ int god_read_banlist(void)
 		return( 0);
 	}
 
-	read(handle, &maxban, sizeof(maxban));
-	read(handle, ban, sizeof(ban));
+	succ = sizeof(maxban) == read(handle, &maxban, sizeof(maxban));
+	succ = succ && sizeof(ban) == read(handle, ban, sizeof(ban));
 
 	close(handle);
+
+	if(!succ){
+	    xlog("Error reading banlist.dat");
+	    return 0;
+	}
 
 	return(1);
 }
 
 int god_write_banlist(void)
 {
-	int handle;
+	int handle, succ;
 
 	handle = open("banlist.dat", O_WRONLY | O_CREAT | O_TRUNC, 0600);
 	if (handle==-1)
@@ -3599,10 +3615,15 @@ int god_write_banlist(void)
 		return( 0);
 	}
 
-	write(handle, &maxban, sizeof(maxban));
-	write(handle, ban, sizeof(ban));
+	succ = sizeof(maxban) == write(handle, &maxban, sizeof(maxban));
+	succ = succ && sizeof(ban) == write(handle, ban, sizeof(ban));
 
 	close(handle);
+
+	if(!succ){
+	    xlog("Error writing banlist.dat");
+	    return 0;
+	}
 
 	return(1);
 }

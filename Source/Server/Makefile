@@ -1,8 +1,9 @@
-all: server respawn password cgi/info.cgi cgi/acct.cgi owner
+all: install respawn password cgi/info.cgi cgi/acct.cgi owner
 
 CC=gcc -m32
 DEBUG=-g
-CFLAGS=-Wall -Wshadow -Winline -Wno-pointer-sign -O3 $(DEBUG) -march=pentium4 -fno-strict-aliasing
+# Try setting EXTRAFLAGS=-DTESTSERVER
+CFLAGS=-Wall -Wshadow -Winline -Wno-pointer-sign -O3 $(DEBUG) -march=pentium4 -fno-strict-aliasing $(EXTRAFLAGS)
 LDFLAGS=-O $(DEBUG)
 ENDFLAGS=-lm -lz -lcrypt
 
@@ -49,8 +50,11 @@ owner:
 	sudo chgrp $(USERNAME) $(SERVERDIR)/*
 	sudo chgrp $(USERNAME) $(SERVERDIR)/.*
 
-server:	$(OBJS) structure
+server:	$(OBJS)
 	$(CC) $(LDFLAGS) -o server $(OBJS) $(ENDFLAGS)
+	echo Extra flags: $(EXTRAFLAGS)
+
+install: server structure
 	sudo cp server $(SERVERDIR)/server
 	sudo cp badnames.txt $(SERVERDIR)/badnames.txt
 	sudo cp badwords.txt $(SERVERDIR)/badwords.txt
@@ -154,8 +158,11 @@ password: password.c $(SHEADER)
 .obj/rdtsc.o:		rdtsc.S
 	$(CC) $(CFLAGS) -o .obj/rdtsc.o -c rdtsc.S
 
-clean:
-	- sudo rm server password respawn $(CGIIMP)/acct.cgi $(CGIBIN)/info.cgi .obj/*.o
+clean: buildclean
+	- sudo rm server password respawn $(CGIIMP)/acct.cgi $(CGIBIN)/info.cgi
+
+buildclean:
+	- rm .obj/*.o
 
 dist:
 	rm -f merc2.tgz

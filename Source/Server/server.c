@@ -820,10 +820,10 @@ void prof_stop(int task, unsigned long long cycle)
 
 void tmplabcheck(int in)
 {
-	int cn;
+	int cn = it[in].carried;
 
 	// carried by a player?
-	if (!(cn = it[in].carried) | !IS_SANEPLAYER(cn))
+	if (!cn | !IS_SANEPLAYER(cn))
 	{
 		return;
 	}
@@ -844,13 +844,15 @@ int see_hit = 0, see_miss = 0;
 
 int main(int argc, char *args[])
 {
-	int sock, n, one = 1, doleave = 0, ltimer = 0;
+	int sock, n, nice_res, one = 1, doleave = 0, ltimer = 0;
 	struct sockaddr_in addr;
 	int pidfile;
 	char pid_str[10];
 	unsigned long long t1, t2;
 
-	nice(5);
+	nice_res = nice(5);
+
+	printf("argc: %d", argc);
 
 	if (argc==1)
 	{
@@ -878,6 +880,10 @@ int main(int argc, char *args[])
 
 	xlog("Mercenaries of Astonia Server v%d.%02d.%02d", VERSION >> 16, (VERSION >> 8) & 255, VERSION & 255);
 	xlog("Copyright (C) 1997-2001 Daniel Brockhaus");
+
+	if(nice_res){
+	    xlog("Nice failed.");
+	}
 
 	t1 = rdtsc();
 	sleep(1);
@@ -1025,7 +1031,9 @@ int main(int argc, char *args[])
 	if (pidfile!=-1)
 	{
 		sprintf(pid_str, "%d\n", getpid());
-		write(pidfile, pid_str, strlen(pid_str));
+		if(strlen(pid_str) != write(pidfile, pid_str, strlen(pid_str))){
+		    xlog("Failed to write PID to server.pid");
+		}
 		close(pidfile);
 		chmod("server.pid", 0664);
 	}
