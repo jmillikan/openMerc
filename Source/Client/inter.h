@@ -47,7 +47,15 @@ struct pdata
 	struct xbutton xbutton[12];
 };
 
+struct hostdata
+{
+    unsigned int marker1;
+    char host_addr[84];
+    unsigned int marker2;
+};
+
 extern struct pdata pdata;
+extern struct hostdata hostdata;
 
 extern struct cplayer pl;
 extern struct cmap *map;
@@ -65,6 +73,9 @@ void xlog(char font, char *format, ...);
 int play_sound(char *file, int vol, int pan);
 void reset_block(void);
 
+
+#define DEBUG_WRITE(x,sx) debug_write((void *) x, #x, sx);
+void debug_write(void *p, char *name, size_t ps);
 void save_options(void);
 void load_options(void);
 void options(void);

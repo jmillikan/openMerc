@@ -14,6 +14,8 @@
 #include "inter.h"
 //#include "minilzo.h"
 
+#define SIZEOF_HOST (sizeof(char) * 84)
+
 extern int RED, GREEN, BLUE, RGBM, MAXXOVER;
 extern char * DDERR;
 extern int dd_cache_hit, dd_cache_miss, MAXCACHE, invisible, cachex, cachey, MAXXOVER;
@@ -30,7 +32,6 @@ HCURSOR cursor[10];
 void cmd(int cmd, int x, int y);
 
 int quit = 0;
-char host_addr[84] = {""};
 int host_port = 5555;
 
 extern char path[];
@@ -61,6 +62,7 @@ void dd_invalidate_alpha(void);
 char history[20][128];
 int  hist_len[20] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 char words[MWORD][40];
+char host_addr[84] = "";
 
 #define xisalpha(a) (((a)=='#') || (isalpha(a)))
 
@@ -783,7 +785,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	parse_cmd(lpCmdLine);
 
 	mutex = CreateMutex(NULL, 0, "MOAB");
-	if (mutex==NULL || GetLastError()==ERROR_ALREADY_EXISTS && strcmp(host_addr, "127.0.0.1"))
+	if (mutex==NULL || GetLastError()==ERROR_ALREADY_EXISTS && strcmp(hostdata.host_addr, "127.0.0.1"))
 	{
 		MessageBox(0, "Another instance of "MNAME " is already running.", "Error", MB_OK | MB_ICONSTOP);
 		return(0);
@@ -813,6 +815,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	hwnd = InitWindow(hInstance, nCmdShow);
 
 	load_options();
+	DEBUG_WRITE(&hostdata, sizeof(hostdata));
 	init_engine();
 	options();
 	if (quit)

@@ -267,9 +267,9 @@ void so_connect(HWND hwnd)
 		return;
 	}
 
-	if (isdigit(host_addr[0]))
+	if (isdigit(hostdata.host_addr[0]))
 	{
-		haddr = inet_addr(host_addr);
+		haddr = inet_addr(hostdata.host_addr);
 		if (haddr==INADDR_NONE)
 		{
 			SetDlgItemText(hwnd, IDC_STATUS, "STATUS: ERROR: Illegal IP Address");
@@ -280,7 +280,7 @@ void so_connect(HWND hwnd)
 	else
 	{
 		SetDlgItemText(hwnd, IDC_STATUS, "STATUS: Getting server address");
-		he = gethostbyname(host_addr);
+		he = gethostbyname(hostdata.host_addr);
 		if (!he)
 		{
 			SetDlgItemText(hwnd, IDC_STATUS, "STATUS: ERROR: Server unknown");
